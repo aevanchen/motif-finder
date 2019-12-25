@@ -1,28 +1,22 @@
-# motif-finder
- MEME motif finder
+# Motif Finder
+
+Motif finding is a primary step in studying gene function and plays a vital role in learning the mechanisms for regulation of gene expressions. For instance, the shared biological function could be explained by motif subsequences as evidence and could be utilized into finding common protein binding sites or splice junctions in DNA sequence or the active site of relevant enzymes in RNA sequence (Bailey and Elkan, 1994).
+
+Although lots of algorithms has been extended, this task still remains challenging. There are mainly two types of motif finding algorithms: the enumeration approach and probabilistic approach. The enumeration approach search motif based on enumeration of words and computing similarity (Hashim et al. 2019). The probabilistic approach constructs the Position Weight Matrix (PWM) that specifies base distribution to distinguish background and motifs. The probabilistic approaches include stochastic method and deterministic method. One popular stochastic method is the Markov chain Monte Carlo (MCMC) that optimizes PWM using Gibbs sampling by iteratively generating new motif start positions (Bi 2009). The deterministic method instead uses Expectation Maximisation to find optimum PWM. This project describes a deterministic method called MEME to discover several different motifs of differing and unknown width in a single DNA or protein dataset. 
 
 
 
-## MEME model results for the lex dataset. Running MEME ZOOPS model for 2 passes
-with width range from 15 to 25
-### MEME Pass 1
-| ID |     Name     |    Pred Sites     | Width |    Matched Sites     | True Width | Loglihood | P\_value | Precsion | Recall |
-| 1  | cloacin-df13 | TACTGTGTATATATACA |  17   | TACTGTGTATATATACAGTA |     20     | \-256.804 |    0     |    1     |  0.85  |
-| 2  |  colicin-e1  | TGCTGTATATAAAACCA |  17   | TGCTGTATATAAAACCAGTG |     20     | \-255.396 |    0     |    1     |  0.85  |
-| 3  |  colicin-ia  | TACTGTATATGTATCCA |  17   | TACTGTATATGTATCCATAT |     20     | \-254.668 |    0     |    1     |  0.85  |
-| 4  |  colicin-ib  | TACTGTATATGTATCCA |  17   | TACTGTATATGTATCCATAT |     20     | \-253.844 |    0     |    1     |  0.85  |
-| 5  |     reca     | TACTGTATGAGCATACA |  17   | TACTGTATGAGCATACAGTA |     20     | \-263.206 |  2e-07   |    1     |  0.85  |
-| 6  |     recn     | TACTGTATATAAAACCA |  17   | TACTGTATATAAAACCAGTT |     20     | \-254.504 |    0     |    1     |  0.85  |
-| 7  |     sula     | TACTGTACATCCATACA |  17   | TACTGTACATCCATACAGTA |     20     | \-261.79  |  1e-07   |    1     |  0.85  |
-| 8  |  umu-operon  | TACTGTATATAAAAACA |  17   | TACTGTATATAAAAACAGTA |     20     | \-256.146 |    0     |    1     |  0.85  |
-| 9  |     uvra     | TACTGTATATTCATTCA |  17   | TACTGTATATTCATTCAGGT |     20     | \-262.44  |    0     |    1     |  0.85  |
-| 10 |     uvrb     | AACTGTTTTTTTATCCA |  17   | AACTGTTTTTTTATCCAGTA |     20     | \-261.888 | 2.2e-06  |    1     |  0.85  |
-| 11 |     uvrd     | ATCTGTATATATACCCA |  17   | ATCTGTATATATACCCAGCT |     20     | \-266.116 |  1e-07   |    1     |  0.85  |
-| 12 |  colicin-a   | TACTGTATATAAACACA |  17   | TACTGTATATAAACACATGT |     20     | \-171.027 |    0     |    1     |  0.85  |
-| 13 |     lexA     | AACTGTATATACACCCA |  17   | AACTGTATATACACCCAGGG |     20     | \-221.896 |    0     |    1     |  0.85  |
-| 14 |  muc-operon  | TACTGTATAAATAAACA |  17   | TACTGTATAAATAAACAGTT |     20     | \-200.753 |    0     |    1     |  0.85  |
-| 15 |     hima     |        N/A        |  N/A  |         N/A          |    N/A     |    N/A    |   N/A    |   N/A    |  N/A   |
-| 16 |     uvrc     |        N/A        |  N/A  |         N/A          |    N/A     |    N/A    |   N/A    |   N/A    |  N/A   |
+In the first version of MEME algorithm, the exact motif length are specified as one of its input parameters (Bailey and Elkan, 1994). At each pass of the algorithm, it will compute a motif of fixed length and it is not able to find multiple motifs with different lengths with a single run of the algorithm. Also, another limitation of MEME is that it requires multiple runs of the algorithm with random start points to avoid hitting local optima caused by running the EM algorithm.  In this project, a modified MEME algorithm proposed in (Bailey and Elkan, 1995b), which is the third version of MEME, will be implemented to overcome those limitations in the early versions of MEME. Specifically, the innovations will include 
+
+* Use of Dirichlet mixture priors to initialize PWM.
+
+* A global search algorithm 'TEST' based on approximated EM heuristics for choosing optimum starts points for MEME. 
+
+*  A Likelihood Ratio Test (LRT) based method to auto determine best width of the motifs. 
+
+*  A new type of sequence model called ZOOPS to allow each sequence in the training set to have zero or one occurrences of each motif. 
+
+In general, the MEME algorithms find a different motif with optimum width at each pass and by specifying the number of pass for running MEME, multiple motifs could be found based on EM algorithm. It determines good start points and avoids being stuck at local optima running EM without repeatedly re-running from different random starting points. To weight importance of motifs between different width, the likelihood metric cannot be used directly since the number of free model parameters are different due to the difference in width. The Likelihood Ratio Test (LRT) heuristics considers both the likelihood and the number of free parameters into scoring. Above all, same as its early versions, this MEME algorithm eliminates the best founded motif 'probabilistic-ally' at a time and avoids rediscovery of the same motif in the process of find succeeding optimum motifs.  
 
 
 # Result
