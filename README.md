@@ -6,6 +6,8 @@ Although lots of algorithms has been extended, this task still remains challengi
 
 
 
+## Overview
+
 In the first version of MEME algorithm, the exact motif length are specified as one of its input parameters (Bailey and Elkan, 1994). At each pass of the algorithm, it will compute a motif of fixed length and it is not able to find multiple motifs with different lengths with a single run of the algorithm. Also, another limitation of MEME is that it requires multiple runs of the algorithm with random start points to avoid hitting local optima caused by running the EM algorithm.  In this project, a modified MEME algorithm proposed in (Bailey and Elkan, 1995b), which is the third version of MEME, will be implemented to overcome those limitations in the early versions of MEME. Specifically, the innovations will include 
 
 * Use of Dirichlet mixture priors to initialize PWM.
@@ -19,9 +21,19 @@ In the first version of MEME algorithm, the exact motif length are specified as 
 In general, the MEME algorithms find a different motif with optimum width at each pass and by specifying the number of pass for running MEME, multiple motifs could be found based on EM algorithm. It determines good start points and avoids being stuck at local optima running EM without repeatedly re-running from different random starting points. To weight importance of motifs between different width, the likelihood metric cannot be used directly since the number of free model parameters are different due to the difference in width. The Likelihood Ratio Test (LRT) heuristics considers both the likelihood and the number of free parameters into scoring. Above all, same as its early versions, this MEME algorithm eliminates the best founded motif 'probabilistic-ally' at a time and avoids rediscovery of the same motif in the process of find succeeding optimum motifs.  
 
 
-# Result
+## Result
+
+<b> The result of running ZOOPs model on lex dataset is shown below </b>
+
 ![report1](figure/report1.jpg)
 
+
+
+<b> The Table 7 evaluates the performance of ZOOPS model on the composite crplex dataset. It could beseen here with more inputs and more diverse mix of different motif, the performance of the MEMEslightly degrades compared to the results obtained by running it on individual dataset. </b>
+
 ![report1](figure/report2.jpg)
+
+
+<b> This susceptibility to noise could also be observed in table 9, where I ran the same MEME modelon the crp datasets that contain different number of random generated sequences.  As the random sequence start to dominate, the performance of MEME is maintained at relatively the same level asthe original data given the roc and accuracy is still around 0.9 and 0.8 correspondingly. </b>
 
 ![report1](figure/report3.jpg)
